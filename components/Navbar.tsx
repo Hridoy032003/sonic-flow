@@ -3,67 +3,88 @@
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
-import { Music, LogOut, LogIn, UserPlus, Shield } from "lucide-react";
+import { Music, LogOut, Shield, User, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 export default function Navbar() {
   const { user, logout, loading } = useAuth();
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] p-4">
-      <div className="max-w-7xl mx-auto glass rounded-[24px] px-6 h-16 flex items-center justify-between shadow-lg shadow-sky-500/5">
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-7xl">
+      <div className="glass rounded-[24px] px-8 h-20 flex items-center justify-between shadow-2xl shadow-indigo-500/5">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="bg-sky-500 text-white p-2 rounded-xl group-hover:rotate-12 transition-transform shadow-lg shadow-sky-500/20">
+          <div className="bg-slate-900 text-white p-2 rounded-xl group-hover:rotate-12 transition-transform shadow-lg">
             <Music size={20} />
           </div>
-          <span className="font-extrabold text-xl tracking-tight text-slate-900">Sonic<span className="text-sky-500">Flow</span></span>
+          <span className="font-bold text-xl tracking-tight text-slate-900">SonicFlow</span>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-8">
           {!loading && (
             <>
               {user ? (
-                <div className="flex items-center gap-4">
-                  <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-sky-50 rounded-full border border-sky-100">
-                    <div className="w-2 h-2 rounded-full bg-sky-500"></div>
-                    <span className="text-xs font-bold text-sky-700 uppercase tracking-wider">
-                      {user.email.split("@")[0]}
-                    </span>
-                  </div>
-                  
-                  {user.role === "ADMIN" && (
-                    <Link
-                      href="/admin"
-                      className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-sky-600 transition-colors"
+                <div className="flex items-center gap-6">
+                  <nav className="hidden md:flex items-center gap-8 mr-4 border-r border-slate-200/50 pr-8">
+                    <Link href="/" className={`text-sm font-bold transition-colors ${pathname === '/' ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-900'}`}>Explore</Link>
+                    <Link href="#" className="text-sm font-bold text-slate-500 hover:text-slate-900">Library</Link>
+                    {user.role === 'ADMIN' && (
+                      <Link href="/admin" className="text-sm font-bold text-slate-500 hover:text-slate-900 flex items-center gap-1.5">
+                        <Shield size={14} className="text-indigo-500" /> Admin
+                      </Link>
+                    )}
+                  </nav>
+
+                  <div className="relative">
+                    <button 
+                      onClick={() => setMenuOpen(!menuOpen)}
+                      className="flex items-center gap-3 p-1.5 pr-4 rounded-2xl bg-white/50 border border-white/50 hover:bg-white transition-all group"
                     >
-                      <Shield size={16} />
-                      Admin
-                    </Link>
-                  )}
-                  
-                  <button
-                    onClick={logout}
-                    className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-rose-600 bg-rose-50 rounded-xl hover:bg-rose-100 transition-all border border-rose-100"
-                  >
-                    <LogOut size={16} />
-                    Logout
-                  </button>
+                      <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-indigo-500/20">
+                        {user.email[0].toUpperCase()}
+                      </div>
+                      <div className="text-left hidden sm:block">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Account</p>
+                        <p className="text-xs font-bold text-slate-700 truncate max-w-[120px] mt-1">{user.email.split('@')[0]}</p>
+                      </div>
+                      <ChevronDown size={14} className={`text-slate-400 transition-transform duration-300 ${menuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {menuOpen && (
+                      <div className="absolute top-full right-0 mt-3 w-56 bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-2 z-[110] animate-in fade-in slide-in-from-top-4 duration-300">
+                        <Link 
+                          href="/profile" 
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center gap-3 px-5 py-4 rounded-2xl text-slate-600 hover:bg-white/50 font-bold text-sm transition-all"
+                        >
+                          <User size={18} className="text-slate-400" /> View Profile
+                        </Link>
+                        <button 
+                          onClick={() => { logout(); setMenuOpen(false); }}
+                          className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-rose-500 hover:bg-rose-50/50 font-bold text-sm transition-all text-left"
+                        >
+                          <LogOut size={18} /> Sign Out
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                   <Link
                     href="/login"
-                    className="px-6 py-2.5 text-sm font-bold text-slate-600 hover:text-sky-600 transition-colors"
+                    className="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-900 transition-all"
                   >
-                    Login
+                    Log In
                   </Link>
                   <Link
                     href="/register"
-                    className="px-6 py-2.5 text-sm font-bold text-white bg-sky-500 rounded-xl hover:bg-sky-600 transition-all shadow-lg shadow-sky-500/20"
+                    className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all shadow-xl"
                   >
-                    Sign Up
+                    Join Now
                   </Link>
                 </div>
               )}
