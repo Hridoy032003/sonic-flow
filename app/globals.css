@@ -1,27 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fdfdff;
   --foreground: #0f172a;
   --primary: #4f46e5;
   --primary-foreground: #ffffff;
-  --secondary: #f8fafc;
-  --secondary-foreground: #475569;
-  --border: #e2e8f0;
-  --card-bg: rgba(255, 255, 255, 0.6);
-  --card-border: rgba(255, 255, 255, 0.3);
+  --secondary: #ffffff;
+  --secondary-foreground: #64748b;
+  --border: #f1f5f9;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(255, 255, 255, 0.5);
+  --heading-color: #0f172a;
+  --muted-color: #64748b;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #f8fafc;
+  --background: #000000;
+  --foreground: #ffffff;
   --primary: #6366f1;
   --primary-foreground: #ffffff;
-  --secondary: #1e293b;
-  --secondary-foreground: #94a3b8;
+  --secondary: #18181b;
+  --secondary-foreground: #a1a1aa;
   --border: #27272a;
-  --card-bg: rgba(0, 0, 0, 0.6);
+  --card-bg: rgba(24, 24, 27, 0.8);
   --card-border: rgba(255, 255, 255, 0.1);
+  --heading-color: #ffffff;
+  --muted-color: #a1a1aa;
 }
 
 @theme inline {
@@ -32,7 +36,9 @@
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-border: var(--border);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --color-heading: var(--heading-color);
+  --color-muted-text: var(--muted-color);
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
 
 body {
@@ -40,26 +46,40 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   background-image: 
-    radial-gradient(at 0% 0%, hsla(243, 75%, 59%, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(199, 89%, 48%, 0.05) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, hsla(243, 75%, 59%, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(199, 89%, 48%, 0.08) 0px, transparent 50%);
   background-attachment: fixed;
-  transition: background-color 0.5s ease, color 0.5s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 .glass {
   background: var(--card-bg);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
   border: 1px solid var(--card-border);
+  box-shadow: 0 20px 50px -12px rgb(0 0 0 / 0.05);
 }
 
-.card-premium {
-  background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: 2rem;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.04);
+.dark .glass {
+  box-shadow: 0 20px 50px -12px rgb(0 0 0 / 0.5);
 }
 
-.admin-sidebar {
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+.dark .text-slate-900, .dark .text-slate-800, .dark .text-slate-700 {
+  color: #ffffff !important;
+}
+
+.dark .text-slate-600, .dark .text-slate-500 {
+  color: #a1a1aa !important;
+}
+
+.dark .bg-white {
+  background-color: #18181b !important;
+}
+
+.dark .bg-slate-50 {
+  background-color: #09090b !important;
+}
+
+.dark .border-slate-100, .dark .border-slate-50 {
+  border-color: #27272a !important;
 }
