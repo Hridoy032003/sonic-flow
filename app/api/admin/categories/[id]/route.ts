@@ -7,20 +7,19 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const session = await getSession();
     if (!session || session.role !== "ADMIN") return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
 
-    const { status, role, email } = await req.json();
+    const { name, description } = await req.json();
     const { id } = await params;
     
     const data: any = {};
-    if (status) data.status = status;
-    if (role) data.role = role;
-    if (email) data.email = email;
+    if (name) data.name = name;
+    if (description !== undefined) data.description = description;
 
-    const user = await prisma.user.update({
+    const category = await prisma.category.update({
       where: { id },
       data
     });
 
-    return NextResponse.json({ user });
+    return NextResponse.json({ category });
   } catch (error: unknown) {
     return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }

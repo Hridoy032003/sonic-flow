@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
 import { ProgressTracker } from "@/components/tool-ui/progress-tracker";
@@ -28,8 +29,18 @@ export default function RegisterPage() {
       });
 
       if (res.ok) {
-        await checkAuth();
-        router.push("/");
+        const signInRes = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (signInRes?.ok) {
+          router.push("/");
+          router.refresh();
+        } else {
+          setError(signInRes?.error || "Failed to login after registration");
+        }
       } else {
         const data = await res.json();
         setError(data.error || "Failed to register");

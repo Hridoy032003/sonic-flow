@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { setSession } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
@@ -22,7 +21,6 @@ export async function POST(req: Request) {
       },
     });
 
-    await setSession(user.id, user.role);
     return NextResponse.json({ message: "Registered successfully", user: { id: user.id, email: user.email, role: user.role } });
   } catch (error) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });

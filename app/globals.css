@@ -83,3 +83,12 @@ body {
 .dark .border-slate-100, .dark .border-slate-50 {
   border-color: #27272a !important;
 }
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;
+}

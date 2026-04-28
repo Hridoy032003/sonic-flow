@@ -1,15 +1,38 @@
-"use client";
-
-import { Music, Play, Heart, Download, MoreHorizontal } from "lucide-react";
+import { Download, Heart, MoreHorizontal, Music, Play } from "lucide-react";
+import { useState } from "react";
 
 interface MusicCardProps {
+  id: string;
   title: string;
   artist: string;
+  likes: number;
+  downloads: number;
+  shares: number;
   isActive?: boolean;
   onClick?: () => void;
 }
 
-export function MusicCard({ title, artist, isActive, onClick }: MusicCardProps) {
+export function MusicCard({ id, title, artist, likes: initialLikes, downloads: initialDownloads, shares: initialShares, isActive, onClick }: MusicCardProps) {
+  const [likes, setLikes] = useState(initialLikes);
+  const [downloads, setDownloads] = useState(initialDownloads);
+  const [shares, setShares] = useState(initialShares);
+
+  const handleInteraction = async (e: React.MouseEvent, type: string) => {
+    e.stopPropagation();
+    try {
+      const res = await fetch("/api/music/interaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, type }),
+      });
+      if (res.ok) {
+        if (type === "like") setLikes(l => l + 1);
+        if (type === "download") setDownloads(d => d + 1);
+        if (type === "share") setShares(s => s + 1);
+      }
+    } catch (error) {}
+  };
+
   return (
     <div 
       onClick={onClick}
@@ -42,10 +65,19 @@ export function MusicCard({ title, artist, isActive, onClick }: MusicCardProps) 
       </h4>
       <p className="text-xs font-bold text-muted-text uppercase tracking-widest mb-6">{artist}</p>
 
-      <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
-        <button className="p-3 text-muted-text hover:text-rose-500 hover:bg-rose-50/50 rounded-2xl transition-all"><Heart size={20} /></button>
-        <button className="p-3 text-muted-text hover:text-indigo-600 hover:bg-indigo-50/50 rounded-2xl transition-all"><Download size={20} /></button>
-        <button className="p-3 text-muted-text hover:text-foreground hover:bg-white/10 rounded-2xl transition-all"><MoreHorizontal size={20} /></button>
+      <div className="flex items-center justify-center gap-6 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+        <div className="flex flex-col items-center gap-1">
+          <button onClick={(e) => handleInteraction(e, "like")} className="p-3 text-muted-text hover:text-rose-500 hover:bg-rose-50/50 rounded-2xl transition-all"><Heart size={20} /></button>
+          <span className="text-[10px] font-black text-muted-text">{likes}</span>
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <button onClick={(e) => handleInteraction(e, "download")} className="p-3 text-muted-text hover:text-indigo-600 hover:bg-indigo-50/50 rounded-2xl transition-all"><Download size={20} /></button>
+          <span className="text-[10px] font-black text-muted-text">{downloads}</span>
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <button onClick={(e) => handleInteraction(e, "share")} className="p-3 text-muted-text hover:text-foreground hover:bg-white/10 rounded-2xl transition-all"><MoreHorizontal size={20} /></button>
+          <span className="text-[10px] font-black text-muted-text">{shares}</span>
+        </div>
       </div>
     </div>
   );

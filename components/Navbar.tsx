@@ -44,11 +44,11 @@ export default function Navbar() {
                       className="flex items-center gap-4 p-2 pr-5 rounded-[24px] bg-secondary border border-border hover:bg-background transition-all group shadow-sm"
                     >
                       <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black text-sm shadow-lg shadow-primary/20">
-                        {user.email[0].toUpperCase()}
+                        {user?.email[0].toUpperCase() || null}
                       </div>
                       <div className="text-left hidden sm:block">
                         <p className="text-[10px] font-black text-muted-text uppercase tracking-widest leading-none mb-1">Account</p>
-                        <p className="text-xs font-black text-foreground truncate max-w-[120px]">{user.email.split('@')[0]}</p>
+                        <p className="text-xs font-black text-foreground truncate max-w-[120px]">{user?.email.split('@')[0]}</p>
                       </div>
                       <ChevronDown size={16} className={`text-muted-text transition-transform duration-300 ${menuOpen ? 'rotate-180' : ''}`} />
                     </button>

@@ -26,6 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/users", icon: <Users size={18} />, label: "User Management" },
     { href: "/admin/categories", icon: <FolderOpen size={18} />, label: "Music Segments" },
     { href: "/admin/music", icon: <Music size={18} />, label: "Library Content" },
+    { href: "/admin/settings", icon: <Settings size={18} />, label: "Global Settings" },
   ];
 
   return (

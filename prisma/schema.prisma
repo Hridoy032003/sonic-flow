@@ -1,10 +1,9 @@
 generator client {
   provider = "prisma-client-js"
-  engineType = "library"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
 
 model User {
@@ -27,15 +26,25 @@ model Category {
 }
 
 model Music {
-  id          String    @id @default(cuid())
-  title       String
-  artist      String?
-  durationMs  Int       @default(0)
-  srcUrl      String
-  artworkUrl  String?
-  categoryId  String?
-  category    Category? @relation(fields: [categoryId], references: [id])
-  status      String    @default("PUBLISHED") // PUBLISHED, HIDDEN
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         String    @id @default(cuid())
+  title      String
+  artist     String?
+  durationMs Int       @default(0)
+  srcUrl     String
+  artworkUrl String?
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  status     String    @default("PUBLISHED") // PUBLISHED, HIDDEN
+  likes      Int       @default(0)
+  downloads  Int       @default(0)
+  shares     Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model SystemSettings {
+  id              Int      @id @default(1)
+  askSubscription Boolean  @default(true)
+  defaultTheme    String   @default("light")
+  updatedAt       DateTime @updatedAt
 }

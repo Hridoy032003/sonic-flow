@@ -23,7 +23,8 @@ export async function POST(req: Request) {
     
     await setSession(user.id, user.role);
     return NextResponse.json({ message: "Logged in successfully", user: { id: user.id, email: user.email, role: user.role } });
-  } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Login Error:", error);
+    return NextResponse.json({ error: error.message || "Server error", stack: error.stack }, { status: 500 });
   }
 }

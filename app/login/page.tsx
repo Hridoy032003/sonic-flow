@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Music } from "lucide-react";
 
@@ -20,18 +21,17 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
       });
 
-      if (res.ok) {
-        await checkAuth();
+      if (res?.ok) {
         router.push("/");
+        router.refresh();
       } else {
-        const data = await res.json();
-        setError(data.error || "Failed to login");
+        setError(res?.error || "Failed to login");
       }
     } catch (err) {
       setError("An unexpected error occurred");

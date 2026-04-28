@@ -2,6 +2,7 @@
 
 import { useApi } from "@/hooks/useApi";
 import { useState } from "react";
+import { useSettings } from "@/components/SettingsProvider";
 import { AudioPlayer } from "@/components/tool-ui/audio";
 import { MusicCard } from "@/components/tool-ui/music-card";
 import { Search, Music, Disc, List, Sparkles, Headphones, Download, Heart, MoreHorizontal } from "lucide-react";
@@ -9,6 +10,7 @@ import { Search, Music, Disc, List, Sparkles, Headphones, Download, Heart, MoreH
 export default function Home() {
   const { data: catData } = useApi<{ categories: any[] }>("/api/categories");
   const { data: musicData, loading } = useApi<{ music: any[] }>("/api/music");
+  const { settings } = useSettings();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeTrack, setActiveTrack] = useState<any>(null);
 
@@ -51,12 +53,14 @@ export default function Home() {
         </div>
 
         <div className="mt-auto">
-          <div className="bg-indigo-600 rounded-[32px] p-8 text-white relative overflow-hidden shadow-2xl group">
-             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform"><Headphones size={80} /></div>
-             <h4 className="font-bold text-lg mb-2 leading-tight">Join Premium</h4>
-             <p className="text-xs text-indigo-100 leading-relaxed mb-6 opacity-80">Experience Hi-Fi audio quality and offline mode.</p>
-             <button className="w-full bg-white text-indigo-600 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl">Get Started</button>
-          </div>
+          {settings?.askSubscription !== false && (
+            <div className="bg-indigo-600 rounded-[32px] p-8 text-white relative overflow-hidden shadow-2xl group">
+               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform"><Headphones size={80} /></div>
+               <h4 className="font-bold text-lg mb-2 leading-tight">Join Premium</h4>
+               <p className="text-xs text-indigo-100 leading-relaxed mb-6 opacity-80">Experience Hi-Fi audio quality and offline mode.</p>
+               <button className="w-full bg-white text-indigo-600 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl">Get Started</button>
+            </div>
+          )}
         </div>
       </aside>
 
@@ -102,8 +106,12 @@ export default function Home() {
                {filteredMusic?.map((track) => (
                   <MusicCard 
                     key={track.id}
+                    id={track.id}
                     title={track.title}
                     artist={track.artist || "SonicFlow Studio"}
+                    likes={track.likes || 0}
+                    downloads={track.downloads || 0}
+                    shares={track.shares || 0}
                     isActive={activeTrack?.id === track.id}
                     onClick={() => setActiveTrack(track)}
                   />
@@ -119,6 +127,7 @@ export default function Home() {
           <div className="glass rounded-[50px] p-6 shadow-2xl">
             <AudioPlayer 
               track={{
+                id: activeTrack.id,
                 title: activeTrack.title,
                 artist: activeTrack.artist || "SonicFlow Studio",
                 src: activeTrack.srcUrl,
