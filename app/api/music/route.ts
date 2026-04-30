@@ -47,8 +47,8 @@ export async function GET(req: Request) {
           select: { musicId: true }
         })
       ]);
-      userFavorites = favorites.map(f => f.musicId);
-      userDownloads = downloads.map(d => d.musicId);
+      userFavorites = favorites.map((f: { musicId: string }) => f.musicId);
+      userDownloads = downloads.map((d: { musicId: string }) => d.musicId);
     }
 
     const musicWithMeta = music.map(m => ({
