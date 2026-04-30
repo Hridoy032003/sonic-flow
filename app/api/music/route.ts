@@ -51,7 +51,7 @@ export async function GET(req: Request) {
       userDownloads = downloads.map((d: { musicId: string }) => d.musicId);
     }
 
-    const musicWithMeta = music.map(m => ({
+    const musicWithMeta = music.map((m: any) => ({
       ...m,
       isFavorite: userFavorites.includes(m.id),
       isDownloaded: userDownloads.includes(m.id)
