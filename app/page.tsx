@@ -35,10 +35,18 @@ export default function Home() {
       const res = await fetch(url);
       const data = await res.json();
 
-      if (isNew) setMusicList(data.music);
-      else setMusicList(prev => [...prev, ...data.music]);
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to fetch music");
+      }
 
-      setHasMore(data.pagination.page < data.pagination.totalPages);
+      if (isNew) setMusicList(data.music || []);
+      else setMusicList(prev => [...prev, ...(data.music || [])]);
+
+      if (data.pagination) {
+        setHasMore(data.pagination.page < data.pagination.totalPages);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {

@@ -53,7 +53,7 @@ export default function Navbar() {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          user.email[0].toUpperCase()
+                          user.email?.[0]?.toUpperCase() || null
                         )}
                       </div>
                       <div className="text-left hidden sm:block">
