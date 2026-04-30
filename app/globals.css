@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdfdff;
+  --background: #f8fafc;
   --foreground: #0f172a;
   --primary: #4f46e5;
   --primary-foreground: #ffffff;
@@ -12,6 +12,19 @@
   --card-border: rgba(255, 255, 255, 0.5);
   --heading-color: #0f172a;
   --muted-color: #64748b;
+  
+  /* Standardized Typography Tokens */
+  --font-size-base: 14px;
+  --font-size-md: 18px;
+  --font-size-lg: 26px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --font-size-base: 12px;
+    --font-size-md: 15px;
+    --font-size-lg: 22px;
+  }
 }
 
 .dark {
@@ -38,26 +51,71 @@
   --color-border: var(--border);
   --color-heading: var(--heading-color);
   --color-muted-text: var(--muted-color);
-  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-sans: var(--font-roboto), "Roboto", ui-sans-serif, system-ui;
+  
+  /* Map Tailwind sizes to our 3 restricted sizes */
+  --font-size-xs: var(--font-size-base);
+  --font-size-sm: var(--font-size-base);
+  --font-size-base: var(--font-size-base);
+  --font-size-md: var(--font-size-md);
+  --font-size-lg: var(--font-size-lg);
+  --font-size-xl: var(--font-size-lg);
+  --font-size-2xl: var(--font-size-lg);
+  --font-size-3xl: var(--font-size-lg);
+}
+
+* {
+  font-family: var(--font-sans) !important;
+  -ms-overflow-style: none;  
+  scrollbar-width: none;
+  -webkit-tap-highlight-color: transparent; /* Remove mobile tap highlight */
+  -webkit-touch-callout: none; /* Disable native context menu on long press */
+}
+
+html, body {
+  overflow-x: hidden;
+  height: 100%;
+  overscroll-behavior-y: none; /* Prevent browser bounce effect */
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-base) !important;
+  user-select: none; /* Prevent text selection for native feel */
   background-image: 
-    radial-gradient(at 0% 0%, hsla(243, 75%, 59%, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(199, 89%, 48%, 0.08) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, hsla(243, 75%, 59%, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(199, 89%, 48%, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, hsla(280, 80%, 60%, 0.08) 0px, transparent 50%);
   background-attachment: fixed;
   transition: background-color 0.4s ease, color 0.4s ease;
+  padding-bottom: env(safe-area-inset-bottom); /* Respect notch/home bar */
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Force specific sizes globally */
+h1, h2, h3, .text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
+  font-size: var(--font-size-lg) !important;
+  line-height: 1.2 !important;
+}
+
+h4, h5, h6, .text-md, .text-lg {
+  font-size: var(--font-size-md) !important;
+  line-height: 1.4 !important;
+}
+
+p, span, label, input, button, a, li, div:not(:has(*)), .text-sm, .text-xs, .text-base {
+  font-size: var(--font-size-base) !important;
+  line-height: 1.5 !important;
 }
 
 .glass {
-  background: var(--card-bg);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
-  border: 1px solid var(--card-border);
-  box-shadow: 0 20px 50px -12px rgb(0 0 0 / 0.05);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.08);
 }
 
 .dark .glass {
@@ -84,8 +142,127 @@ body {
   border-color: #27272a !important;
 }
 
+/* Native App Feel Utilities */
+.btn-haptic {
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-haptic:active {
+  transform: scale(0.95);
+}
+
+.safe-bottom {
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.safe-top {
+  padding-top: calc(1rem + env(safe-area-inset-top));
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Force smooth touch scrolling */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
 *::-webkit-scrollbar {
   display: none;
+}
+
+@media (max-width: 640px) {
+  .glass.rounded-b-\[40px\] {
+    height: 70px !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    border-bottom-left-radius: 24px !important;
+    border-bottom-right-radius: 24px !important;
+  }
+  
+  .glass.rounded-b-\[40px\] img {
+    height: 36px !important;
+  }
+
+  button:not(.admin-sidebar button), .btn-primary, .btn-secondary {
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+    padding-left: 0.8rem !important;
+    padding-right: 0.8rem !important;
+    border-radius: 10px !important;
+  }
+  
+  /* Specific override for Join Now button in Navbar */
+  a[href="/register"].px-10.py-4 {
+    padding: 0.6rem 1.2rem !important;
+    font-size: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .music-card {
+    padding: 0.6rem !important;
+    border-radius: 20px !important;
+  }
+  
+  .music-card h4 {
+    font-size: 11px !important;
+  }
+  
+  .music-card p {
+    font-size: 9px !important;
+  }
+
+  /* Floating Category Bar scaling */
+  .lg\:hidden.fixed.bottom-6.left-1\/2.-translate-x-1\/2 {
+    bottom: 0.5rem !important;
+  }
+  
+  .lg\:hidden.fixed.bottom-6.left-1\/2.-translate-x-1\/2 .glass {
+    padding: 0.25rem !important;
+    border-radius: 18px !important;
+  }
+  
+  .lg\:hidden.fixed.bottom-6.left-1\/2.-translate-x-1\/2 button {
+    padding: 0.5rem 1rem !important;
+    border-radius: 14px !important;
+    font-size: 12px !important;
+  }
+
+  /* Audio Player scaling */
+  .fixed.bottom-\[110px\] {
+    bottom: 70px !important;
+  }
+  
+  .fixed.bottom-\[110px\] .glass {
+    padding: 0.5rem !important;
+    border-radius: 24px !important;
+  }
+
+  .fixed.bottom-\[110px\] .w-10.h-10 {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .fixed.bottom-\[110px\] .w-5.h-5 {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* Login text in Navbar */
+  .text-sm.font-black.uppercase.tracking-widest.text-muted-text.hover\:text-foreground.transition-all {
+    font-size: 12px !important;
+  }
+
+  .gap-8 { gap: 0.75rem !important; }
+  .gap-10 { gap: 1rem !important; }
+  .p-10 { padding: 1rem !important; }
+  .p-8 { padding: 0.75rem !important; }
 }
 
 * {

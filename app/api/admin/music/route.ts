@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const session = await getSession();
     if (!session || session.role !== "ADMIN") return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
 
-    const { title, artist, srcUrl, artworkUrl, categoryId, durationMs, status } = await req.json();
+    const { title, artist, srcUrl, artworkUrl, bannerUrl, categoryId, durationMs, status } = await req.json();
     if (!title || !srcUrl) return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
 
     const music = await prisma.music.create({
@@ -16,6 +16,7 @@ export async function POST(req: Request) {
         artist, 
         srcUrl, 
         artworkUrl, 
+        bannerUrl,
         categoryId: categoryId || null,
         durationMs: durationMs ? parseInt(durationMs) : 0,
         status: status || "PUBLISHED"
@@ -36,16 +37,25 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
+    const search = searchParams.get("search") || "";
     const skip = (page - 1) * limit;
 
+    const where = search ? {
+      OR: [
+        { title: { contains: search, mode: 'insensitive' as const } },
+        { artist: { contains: search, mode: 'insensitive' as const } }
+      ]
+    } : {};
+
     const music = await prisma.music.findMany({
+      where,
       skip,
       take: limit,
       include: { category: true },
       orderBy: { createdAt: "desc" }
     });
 
-    const total = await prisma.music.count();
+    const total = await prisma.music.count({ where });
 
     return NextResponse.json({ music, total, page, totalPages: Math.ceil(total / limit) });
   } catch (error: unknown) {

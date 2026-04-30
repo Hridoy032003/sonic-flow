@@ -5,11 +5,11 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const session = await getSession();
-    if (!session || !session.userId) {
+    if (!session || !session.id) {
       return NextResponse.json({ user: null }, { status: 401 });
     }
     const user = await prisma.user.findUnique({
-      where: { id: session.userId as string },
+      where: { id: session.id as string },
       select: { id: true, email: true, role: true }
     });
     return NextResponse.json({ user });

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { signIn } from "next-auth/react";
+import { toast } from "react-hot-toast";
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
 import { ProgressTracker } from "@/components/tool-ui/progress-tracker";
@@ -36,25 +37,31 @@ export default function RegisterPage() {
         });
 
         if (signInRes?.ok) {
+          toast.success("Account created! Welcome to SonicFlow.");
           router.push("/");
           router.refresh();
         } else {
-          setError(signInRes?.error || "Failed to login after registration");
+          const errMsg = signInRes?.error || "Failed to login after registration";
+          setError(errMsg);
+          toast.error(errMsg);
         }
       } else {
         const data = await res.json();
-        setError(data.error || "Failed to register");
+        const errMsg = data.error || "Failed to register";
+        setError(errMsg);
+        toast.error(errMsg);
       }
     } catch (err) {
       setError("An unexpected error occurred");
+      toast.error("Unexpected error occurred");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 p-8">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-transparent">
+      <div className="max-w-md w-full glass rounded-[40px] p-10 shadow-2xl border-white/20">
 
         <ProgressTracker
           steps={[

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Shield, ShieldAlert, UserCheck, UserX, MoreVertical, Search, Filter } from "lucide-react";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function AdminUsers() {
   const [userList, setUserList] = useState<any[]>([]);
@@ -10,13 +11,15 @@ export default function AdminUsers() {
   const [hasMore, setHasMore] = useState(true);
   const [total, setTotal] = useState(0);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
 
   const observerTarget = useRef(null);
 
-  const fetchUsers = async (pageNum: number, reset = false) => {
+  const fetchUsers = async (pageNum: number, reset = false, query = "") => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/admin/users?page=${pageNum}&limit=15`);
+      const res = await fetch(`/api/admin/users?page=${pageNum}&limit=15&search=${query}`);
       const data = await res.json();
       if (data.users) {
         setUserList(prev => reset ? data.users : [...prev, ...data.users]);
@@ -31,8 +34,9 @@ export default function AdminUsers() {
   };
 
   useEffect(() => {
-    fetchUsers(1, true);
-  }, []);
+    setPage(1);
+    fetchUsers(1, true, debouncedSearch);
+  }, [debouncedSearch]);
 
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
@@ -50,7 +54,7 @@ export default function AdminUsers() {
   }, [handleObserver]);
 
   useEffect(() => {
-    if (page > 1) fetchUsers(page);
+    if (page > 1) fetchUsers(page, false, debouncedSearch);
   }, [page]);
 
   const updateUser = async (id: string, updates: any) => {
@@ -90,9 +94,19 @@ export default function AdminUsers() {
       </div>
       
       <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
-        <div className="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
+        <div className="px-8 py-6 border-b border-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
             {total} Total Users
+          </div>
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Search users by email..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-11 pr-5 py-3 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm font-medium"
+            />
           </div>
         </div>
 
@@ -112,7 +126,7 @@ export default function AdminUsers() {
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
                       <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center font-bold text-slate-500 shadow-sm border border-white">
-                        {user.email[0].toUpperCase()}
+                        {user.email?.[0].toUpperCase() || "U"}
                       </div>
                       <div>
                         <p className="text-sm font-bold text-slate-900">{user.email}</p>

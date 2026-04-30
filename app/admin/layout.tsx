@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <div>
               <h2 className="text-xl font-bold tracking-tight">SonicFlow</h2>
-              <p className="text-[10px] text-indigo-300 font-semibold uppercase tracking-widest">Admin Console</p>
+              <p className="text-[12px] text-indigo-300 font-semibold uppercase tracking-widest">Admin Console</p>
             </div>
           </div>
         </div>
@@ -74,11 +74,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
           <div className="bg-white/5 rounded-2xl p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-sm">
-              {user.email[0].toUpperCase()}
+              {user?.email?.[0].toUpperCase() || "A"}
             </div>
             <div className="overflow-hidden">
-              <p className="text-xs font-semibold truncate">{user.email}</p>
-              <p className="text-[10px] text-slate-500 uppercase">System Admin</p>
+              <p className="text-xs font-semibold truncate">{user?.email}</p>
+              <p className="text-[12px] text-slate-500 uppercase">System Admin</p>
             </div>
           </div>
         </div>

@@ -28,5 +28,5 @@ export function useApi<T>(url: string) {
     fetchData();
   }, [fetchData]);
 
-  return { data, error, loading, refetch: fetchData };
+  return { data, error, loading, mutate: fetchData, refetch: fetchData };
 }

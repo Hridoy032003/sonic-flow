@@ -21,6 +21,28 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (loading || !data?.settings) return;
+
+    const theme = data.settings.defaultTheme;
+    let shouldBeDark = false;
+
+    if (theme === "dark") {
+      shouldBeDark = true;
+    } else if (theme === "system") {
+      shouldBeDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+
+    if (shouldBeDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    
+    // Clear any local storage theme to prevent confusion if it was set before
+    localStorage.removeItem("theme");
+  }, [data, loading]);
+
   if (!mounted) return null; // Avoid hydration mismatch
 
   return (

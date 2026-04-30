@@ -66,7 +66,7 @@ export default function ThemeToggle() {
       </div>
       
       {/* Tooltip */}
-      <span className="absolute right-full mr-4 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+      <span className="absolute right-full mr-4 px-3 py-1.5 bg-slate-900 text-white text-[12px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
         {isDark ? 'Light Mode' : 'Dark Mode'}
       </span>
     </button>

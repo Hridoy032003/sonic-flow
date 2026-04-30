@@ -28,15 +28,21 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
+    const search = searchParams.get("search") || "";
     const skip = (page - 1) * limit;
 
+    const where = search ? {
+      name: { contains: search, mode: 'insensitive' as const }
+    } : {};
+
     const categories = await prisma.category.findMany({
+      where,
       skip,
       take: limit,
       orderBy: { createdAt: "desc" }
     });
 
-    const total = await prisma.category.count();
+    const total = await prisma.category.count({ where });
 
     return NextResponse.json({ categories, total, page, totalPages: Math.ceil(total / limit) });
   } catch (error: unknown) {

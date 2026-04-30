@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Plus, FolderOpen, MoreVertical, Tag, Hash, Calendar } from "lucide-react";
+import { Plus, FolderOpen, MoreVertical, Tag, Hash, Calendar, Search } from "lucide-react";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function AdminCategories() {
   const [adding, setAdding] = useState(false);
@@ -13,13 +14,15 @@ export default function AdminCategories() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
 
   const observerTarget = useRef(null);
 
-  const fetchCategories = async (pageNum: number, reset = false) => {
+  const fetchCategories = async (pageNum: number, reset = false, query = "") => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/admin/categories?page=${pageNum}&limit=12`);
+      const res = await fetch(`/api/admin/categories?page=${pageNum}&limit=12&search=${query}`);
       const data = await res.json();
       if (data.categories) {
         setCategoryList(prev => reset ? data.categories : [...prev, ...data.categories]);
@@ -34,8 +37,9 @@ export default function AdminCategories() {
   };
 
   useEffect(() => {
-    fetchCategories(1, true);
-  }, []);
+    setPage(1);
+    fetchCategories(1, true, debouncedSearch);
+  }, [debouncedSearch]);
 
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
@@ -53,7 +57,7 @@ export default function AdminCategories() {
   }, [handleObserver]);
 
   useEffect(() => {
-    if (page > 1) fetchCategories(page);
+    if (page > 1) fetchCategories(page, false, debouncedSearch);
   }, [page]);
 
   const handleAdd = async (e: React.FormEvent) => {
@@ -102,6 +106,16 @@ export default function AdminCategories() {
         <div>
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Music Segments</h1>
           <p className="text-slate-500 mt-1">Organize your library into discoverable categories. ({total} total)</p>
+        </div>
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input 
+            type="text" 
+            placeholder="Filter segments..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-11 pr-5 py-3 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm font-medium shadow-sm"
+          />
         </div>
       </div>
       

@@ -54,10 +54,10 @@ export function QuestionFlow({ id, steps, onComplete }: QuestionFlowProps) {
       <div className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest px-3 py-1 bg-indigo-50 rounded-full">
+            <span className="text-[12px] font-black text-indigo-500 uppercase tracking-widest px-3 py-1 bg-indigo-50 rounded-full">
               Step {currentStepIndex + 1}
             </span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <span className="text-[12px] font-bold text-slate-400 uppercase tracking-widest">
               of {steps.length}
             </span>
           </div>
@@ -120,7 +120,7 @@ export function QuestionFlow({ id, steps, onComplete }: QuestionFlowProps) {
       </div>
 
       <div className="mt-12 text-center">
-        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest flex items-center justify-center gap-2">
+        <p className="text-[12px] font-bold text-slate-300 uppercase tracking-widest flex items-center justify-center gap-2">
            SonicFlow <ArrowRight size={10} /> Personalized Experience
         </p>
       </div>

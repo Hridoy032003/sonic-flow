@@ -10,16 +10,22 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
+    const search = searchParams.get("search") || "";
     const skip = (page - 1) * limit;
 
+    const where = search ? {
+      email: { contains: search, mode: 'insensitive' as const }
+    } : {};
+
     const users = await prisma.user.findMany({
+      where,
       skip,
       take: limit,
       orderBy: { createdAt: "desc" },
       select: { id: true, email: true, role: true, status: true, createdAt: true }
     });
 
-    const total = await prisma.user.count();
+    const total = await prisma.user.count({ where });
 
     return NextResponse.json({ users, total, page, totalPages: Math.ceil(total / limit) });
   } catch (error: unknown) {
